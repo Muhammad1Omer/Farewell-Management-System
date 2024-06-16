@@ -156,13 +156,33 @@
             }, 1000); 
         }   
         });
-    });
+    });         
+   
 
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('signupForm');
             form.addEventListener('submit', function(event) {
                 const inputs = form.querySelectorAll('input');
                 let isValid = true;
+
+
+                const formData = new FormData(form);
+                fetch('/register-student', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text().then(data => ({ status: response.status, body: data })))
+                .then(({ status, body }) => {
+                    if (status >= 200 && status < 300) {
+                        alert('Registration successful!');
+                        form.reset();
+                    } else {
+                        alert('An error occurred: ' + body);
+                    }
+                })
+                .catch(error => {
+                    alert('An error occurred: ' + error.message);
+                });
 
                 inputs.forEach(input => {
                     const errorSpan = input.nextElementSibling;
